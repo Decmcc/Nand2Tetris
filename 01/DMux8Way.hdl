@@ -1,0 +1,74 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/DMux8Way.hdl
+/**
+ * 8-way demultiplexor:
+ * [a, b, c, d, e, f, g, h] = [in, 0, 0, 0, 0, 0, 0, 0] if sel == 000
+ *                            [0, in, 0, 0, 0, 0, 0, 0] if sel == 001
+ *                            ...
+ *                            [0, 0, 0, 0, 0, 0, 0, in] if sel == 111
+ */
+ 
+/** 
+ * DMux(in=in, sel=sel[2], a=abcd, b=efgh);
+ * DMux4Way(in=abcd, sel=sel[0..1], a=a, b=b, c=c, d=d);
+ * DMux4Way(in=efgh, sel=sel[0..1], a=e, b=f, c=g, d=h);
+ * Alternative:
+ * DMux(in=in,sel=sel[2],a=ao,b=bo);
+ * DMux(in=ao,sel=sel[1],a=aoo,b=boo);
+ * DMux(in=bo,sel=sel[1],a=coo,b=doo);
+ * DMux(in=aoo,sel=sel[0],a=a,b=b);
+ * DMux(in=boo,sel=sel[0],a=c,b=d);
+ * DMux(in=coo,sel=sel[0],a=e,b=f);
+ * DMux(in=doo,sel=sel[0],a=g,b=h);
+ */
+ 
+CHIP DMux8Way {
+    IN in, sel[3];
+    OUT a, b, c, d, e, f, g, h;
+
+    PARTS:
+	Nand(a=sel[2],b=sel[2],out=nand1Out);
+	Nand(a=nand1Out, b=in, out=nand2Out);
+	Nand(a=nand2Out,b=nand2Out,out=ao);
+	Nand(a=sel[2], b=in, out=nand3Out);
+	Nand(a=nand3Out,b=nand3Out,out=bo);
+	
+	Nand(a=sel[1],b=sel[1],out=nand4Out);
+	Nand(a=nand4Out, b=ao, out=nand5Out);
+	Nand(a=nand5Out,b=nand5Out,out=aoo);
+	Nand(a=sel[1], b=ao, out=nand6Out);
+	Nand(a=nand6Out,b=nand6Out,out=boo);
+	
+	Nand(a=sel[1],b=sel[1],out=nand7Out);
+	Nand(a=nand7Out, b=bo, out=nand8Out);
+	Nand(a=nand8Out,b=nand8Out,out=coo);
+	Nand(a=sel[1], b=bo, out=nand9Out);
+	Nand(a=nand9Out,b=nand9Out,out=doo);
+	
+	Nand(a=sel[0],b=sel[0],out=nand10Out);
+	Nand(a=nand10Out, b=aoo, out=nand11Out);
+	Nand(a=nand11Out,b=nand11Out,out=a);
+	Nand(a=sel[0], b=aoo, out=nand12Out);
+	Nand(a=nand12Out,b=nand12Out,out=b);
+	
+	Nand(a=sel[0],b=sel[0],out=nand13Out);
+	Nand(a=nand13Out, b=boo, out=nand14Out);
+	Nand(a=nand14Out,b=nand14Out,out=c);
+	Nand(a=sel[0], b=boo, out=nand15Out);
+	Nand(a=nand15Out,b=nand15Out,out=d);
+	
+	Nand(a=sel[0],b=sel[0],out=nand16Out);
+	Nand(a=nand16Out, b=coo, out=nand17Out);
+	Nand(a=nand17Out,b=nand17Out,out=e);
+	Nand(a=sel[0], b=coo, out=nand18Out);
+	Nand(a=nand18Out,b=nand18Out,out=f);
+	
+	Nand(a=sel[0],b=sel[0],out=nand19Out);
+	Nand(a=nand19Out, b=doo, out=nand20Out);
+	Nand(a=nand20Out,b=nand20Out,out=g);
+	Nand(a=sel[0], b=doo, out=nand21Out);
+	Nand(a=nand21Out,b=nand21Out,out=h);
+
+}
